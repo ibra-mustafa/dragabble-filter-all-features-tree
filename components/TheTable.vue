@@ -12,40 +12,13 @@
         </div>
       </transition>
     </div>
-    <DataTable :value="items">
-      <Column field="name" header="Name"></Column>
-      <Column field="age" header="Age"></Column>
-      <Column field="city" header="City"></Column>
-      <Column field="actions" header="Actions">
-        <template #body="slotProps">
-          <div class="mrgn">
-            <span
-              v-if="disable"
-              class="pi pi-power-off pi-power-off-red"
-              @click="callPropsDisableFunction(slotProps)"
-            ></span>
-            <span
-              class="pi pi-trash"
-              @click="callPropsDeleteFunction(slotProps)"
-            ></span>
-            <span
-              v-if="edit"
-              class="pi pi-pencil"
-              @click="callPropsEditFunction(slotProps)"
-            ></span>
-            <span
-              v-if="view"
-              class="pi pi-eye"
-              @click="callPropsViewFunction(slotProps)"
-            ></span>
-            <span
-              v-if="imperson"
-              class="pi pi-user"
-              @click="callPropsImpersonateFunction(slotProps)"
-            ></span>
-          </div>
-        </template>
-      </Column>
+    <DataTable :value="data">
+      <Column
+        v-for="column in availableColumns"
+        :key="column.field"
+        :field="column.field"
+        :header="column.header"
+      ></Column>
     </DataTable>
   </div>
 </template>
@@ -59,35 +32,13 @@ const availableColumns = ref([
 ]);
 const isDropped = ref();
 const selectedColumns = ref(availableColumns.value);
+const isDragging = ref(false);
 
-interface Item {
-  id: number;
-  name: string;
-  age: number;
-  city: string;
-  disabled: boolean;
-}
-
-const items = ref<Item[]>([
-  { id: 1, name: "John", age: 25, city: "New York", disabled: false },
-  { id: 2, name: "Jane", age: 30, city: "London", disabled: false },
-  // Add more items as needed
+const data = ref([
+  { id: 1, name: "John", age: 25, city: "New York" },
+  { id: 2, name: "Jane", age: 30, city: "London" },
+  // Add more data rows as needed
 ]);
-
-const deleteItem = (item: Item) => {
-  const index = items.value.indexOf(item);
-  if (index !== -1) {
-    items.value.splice(index, 1);
-  }
-};
-
-const editItem = (item: Item) => {
-  // Handle editing logic here
-};
-
-const toggleDisabled = (item: Item) => {
-  item.disabled = !item.disabled;
-};
 
 const dropIt = () => {
   isDropped.value = !isDropped.value;
